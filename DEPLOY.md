@@ -55,7 +55,8 @@ Do **not** commit `server/.env` (secrets). It is listed in `.gitignore`.
    - **Region**: closest to you
    - **Branch**: `main`
    - **Runtime**: Node
-   - **Build Command**: `npm run install:all && npm run build`
+   - **Build Command**: `npm install && npm run build`  
+     (Must install client deps so Vite is available — do **not** use only `npm run build`.)
    - **Start Command**: `npm start`
    - **Plan**: Free (spins down after inactivity; first load may be slow)
 

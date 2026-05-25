@@ -56,8 +56,8 @@ See **[DEPLOY.md](./DEPLOY.md)** for MongoDB Atlas + Render (free tier) step-by-
 Quick summary:
 
 ```bash
-npm run install:all && npm run build   # production build
-npm start                              # serves API + client on PORT
+npm install && npm run build   # production build (postinstall installs server + client)
+npm start                      # serves API + client on PORT
 ```
 
 Set `MONGODB_URI`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `CLIENT_URL`, and `NODE_ENV=production`.
