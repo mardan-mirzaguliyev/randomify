@@ -1,0 +1,36 @@
+.settings-panel {
+  background: #fafbff;
+}
+
+.settings-panel-toggle {
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  padding: 0;
+}
+
+.settings-panel-form {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border);
+}
+
+.settings-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.settings-checkbox input {
+  width: auto;
+  accent-color: var(--accent);
+}

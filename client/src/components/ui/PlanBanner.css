@@ -1,0 +1,30 @@
+.plan-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.85rem 1.1rem;
+  background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.plan-banner--highlight {
+  border-color: rgba(99, 102, 241, 0.35);
+  background: linear-gradient(135deg, #eef2ff 0%, #fdf4ff 100%);
+  box-shadow: var(--shadow);
+}
+
+.plan-banner-cta {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.plan-banner-cta:hover {
+  color: var(--accent-hover);
+}

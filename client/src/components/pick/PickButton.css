@@ -1,0 +1,29 @@
+.pick-button-section {
+  text-align: center;
+  padding: 2.5rem 2rem;
+  background: linear-gradient(145deg, #eef2ff 0%, #fdf4ff 40%, #fff7ed 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: var(--shadow);
+}
+
+.pick-mode-label {
+  color: var(--text-muted);
+  margin: 0 0 1.25rem;
+  font-weight: 500;
+}
+
+.pick-mode-label strong {
+  color: var(--accent);
+}
+
+.pick-main-btn {
+  min-width: 240px;
+  font-size: 1.1rem !important;
+}
+
+.pick-animating {
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

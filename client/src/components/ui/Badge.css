@@ -1,0 +1,30 @@
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 999px;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+}
+
+.badge--default {
+  background: #f1f5f9;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.badge--accent {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+}
+
+.badge--warning {
+  background: var(--warning-soft);
+  color: #b45309;
+}
+
+.badge--success {
+  background: var(--success-soft);
+  color: #047857;
+}

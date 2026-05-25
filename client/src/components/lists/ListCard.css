@@ -1,0 +1,43 @@
+.list-card {
+  border-left: 4px solid transparent;
+  background: linear-gradient(135deg, #fff 0%, #fafbff 100%);
+}
+
+.list-card:hover {
+  border-left-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.list-card h3 {
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.list-card h3 a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.list-card h3 a:hover {
+  color: var(--accent);
+}
+
+.list-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.list-card-meta {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin: 0 0 1rem;
+}
+
+.list-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}

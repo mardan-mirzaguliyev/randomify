@@ -1,0 +1,17 @@
+.add-item-form {
+  background: linear-gradient(135deg, #fafbff 0%, #fff 100%);
+  border-style: dashed;
+  border-color: var(--border-strong);
+}
+
+.add-item-form h3 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  color: var(--accent);
+  font-family: var(--font-display);
+}
+
+.add-item-form .stack,
+.add-item-form > div {
+  margin-bottom: 0.75rem;
+}

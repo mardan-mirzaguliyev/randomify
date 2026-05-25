@@ -1,0 +1,35 @@
+.auth-form {
+  max-width: 420px;
+  margin: 2rem auto;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+}
+
+.auth-form h1 {
+  font-size: 1.65rem;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.auth-form-sub {
+  color: var(--text-muted);
+  margin: 0 0 1.25rem;
+}
+
+.auth-field {
+  margin-bottom: 1rem;
+}
+
+.auth-submit {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}

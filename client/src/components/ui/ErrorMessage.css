@@ -1,0 +1,17 @@
+.error-message {
+  background: var(--danger-soft);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.error-message p {
+  margin: 0;
+  color: var(--danger);
+  font-weight: 500;
+}
