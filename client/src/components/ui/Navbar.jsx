@@ -4,7 +4,7 @@ import Button from './Button.jsx';
 import './Navbar.css';
 
 export default function Navbar() {
-  const { user, logout, isPro } = useAuth();
+  const { user, logout, isPro, isAdmin } = useAuth();
 
   return (
     <nav className="navbar">
@@ -17,8 +17,16 @@ export default function Navbar() {
           <NavLink to="/explore" className={({ isActive }) => (isActive ? 'active' : '')}>
             Explore
           </NavLink>
+          <NavLink to="/blog" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Blog
+          </NavLink>
+          {user && isAdmin && (
+            <NavLink to="/admin" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Admin
+            </NavLink>
+          )}
           {user && (
-            <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : '')}>
+            <NavLink to="/dashboard" className={({ isActive }) => (isActive ? 'active' : '')}>
               Dashboard
             </NavLink>
           )}

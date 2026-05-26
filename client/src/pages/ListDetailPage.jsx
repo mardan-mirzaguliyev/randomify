@@ -62,7 +62,7 @@ export default function ListDetailPage() {
     return (
       <div className="page">
         <ErrorMessage message={error || 'List not found'} onRetry={refetch} />
-        <Link to="/">← Back to dashboard</Link>
+        <Link to="/dashboard">← Back to dashboard</Link>
       </div>
     );
   }
@@ -70,7 +70,7 @@ export default function ListDetailPage() {
   return (
     <div className="page">
       <p>
-        <Link to="/" style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+        <Link to="/dashboard" style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
           ← Dashboard
         </Link>
       </p>

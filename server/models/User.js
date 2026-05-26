@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema(
       enum: ['free', 'pro', 'lifetime'],
       default: 'free',
     },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
     refreshTokens: {
       type: [String],
       select: false,
@@ -60,6 +64,7 @@ userSchema.methods.toSafeJSON = function () {
     email: this.email,
     displayName: this.displayName,
     plan: this.plan,
+    isAdmin: this.isAdmin,
     lastLoginAt: this.lastLoginAt,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,

@@ -11,6 +11,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const isPro = user?.plan === 'pro' || user?.plan === 'lifetime';
+  const isAdmin = user?.isAdmin || false;
 
   useEffect(() => {
     async function restoreSession() {
@@ -79,8 +80,9 @@ export function AuthProvider({ children }) {
       logout,
       refreshToken,
       isPro,
+      isAdmin,
     }),
-    [user, accessToken, loading, isPro]
+    [user, accessToken, loading, isPro, isAdmin]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
