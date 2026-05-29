@@ -7,6 +7,7 @@ import DashboardPage from './pages/DashboardPage.jsx';
 import ListDetailPage from './pages/ListDetailPage.jsx';
 import PublicListsPage from './pages/PublicListsPage.jsx';
 import UpgradePage from './pages/UpgradePage.jsx';
+import BlogPostsPage from './pages/BlogPostsPage.jsx';
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/lists/:id" element={<ListDetailPage />} />
+          <Route path="/blog-posts" element={<BlogPostsPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

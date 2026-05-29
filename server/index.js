@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import authRoutes from './routes/auth.js';
 import listRoutes from './routes/lists.js';
+import blogPostRoutes from './routes/blogPosts.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isProd = process.env.NODE_ENV === 'production';
@@ -27,6 +28,7 @@ app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/lists', listRoutes);
+app.use('/api/blog-posts', blogPostRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });

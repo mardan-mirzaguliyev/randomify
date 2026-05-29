@@ -22,6 +22,11 @@ export default function Navbar() {
               Dashboard
             </NavLink>
           )}
+          {user && (
+            <NavLink to="/blog-posts" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Blog
+            </NavLink>
+          )}
           {user && !isPro && (
             <NavLink to="/upgrade" className={({ isActive }) => (isActive ? 'active' : '')}>
               Upgrade
