@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import authRoutes from './routes/auth.js';
 import listRoutes from './routes/lists.js';
 import blogPostRoutes from './routes/blogPosts.js';
+import adminRoutes from './routes/admin.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isProd = process.env.NODE_ENV === 'production';
@@ -15,7 +16,7 @@ const isProd = process.env.NODE_ENV === 'production';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const clientUrl = process.env.CLIENT_URL || (isProd ? undefined : 'http://localhost:5173');
+const clientUrl = process.env.CLIENT_URL || (isProd ? undefined : true);
 
 app.use(
   cors({
@@ -29,6 +30,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/lists', listRoutes);
 app.use('/api/blog-posts', blogPostRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });

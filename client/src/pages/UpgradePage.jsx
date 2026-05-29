@@ -67,7 +67,7 @@ export default function UpgradePage() {
             You came from: <code>{from}</code>
           </p>
         )}
-        <Link to="/" style={{ fontSize: '0.9rem' }}>
+        <Link to="/dashboard" style={{ fontSize: '0.9rem' }}>
           ← Back to dashboard
         </Link>
       </div>
