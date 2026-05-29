@@ -12,17 +12,26 @@ import {
 const router = Router();
 const MAX_REFRESH_TOKENS = 5;
 
+function clearRefreshCookie(res) {
+  const { maxAge, ...options } = refreshCookieOptions();
+  res.clearCookie(REFRESH_COOKIE, options);
+}
+
 async function issueTokens(user, res) {
   const accessToken = signAccessToken(user._id);
   const refreshToken = signRefreshToken(user._id);
 
-  const userWithTokens = await User.findById(user._id).select('+refreshTokens');
-  let tokens = [...(userWithTokens.refreshTokens || []), refreshToken];
-  if (tokens.length > MAX_REFRESH_TOKENS) {
-    tokens = tokens.slice(-MAX_REFRESH_TOKENS);
-  }
-  userWithTokens.refreshTokens = tokens;
-  await userWithTokens.save();
+  await User.updateOne(
+    { _id: user._id },
+    {
+      $push: {
+        refreshTokens: {
+          $each: [refreshToken],
+          $slice: -MAX_REFRESH_TOKENS,
+        },
+      },
+    }
+  );
 
   res.cookie(REFRESH_COOKIE, refreshToken, refreshCookieOptions());
   return accessToken;
@@ -93,25 +102,21 @@ router.post('/refresh', async (req, res, next) => {
     try {
       payload = verifyRefreshToken(token);
     } catch {
-      res.clearCookie(REFRESH_COOKIE, refreshCookieOptions());
+      clearRefreshCookie(res);
       return res.status(401).json({ message: 'Invalid refresh token' });
     }
 
-    const user = await User.findById(payload.sub).select('+refreshTokens');
-    if (!user) {
-      res.clearCookie(REFRESH_COOKIE, refreshCookieOptions());
-      return res.status(401).json({ message: 'User not found' });
-    }
+    const user = await User.findOneAndUpdate(
+      { _id: payload.sub, refreshTokens: token },
+      { $pull: { refreshTokens: token } },
+      { new: false }
+    ).select('+refreshTokens');
 
-    if (!user.refreshTokens.includes(token)) {
-      user.refreshTokens = [];
-      await user.save();
-      res.clearCookie(REFRESH_COOKIE, refreshCookieOptions());
+    if (!user) {
+      await User.updateOne({ _id: payload.sub }, { $set: { refreshTokens: [] } });
+      clearRefreshCookie(res);
       return res.status(401).json({ message: 'Token reuse detected — please log in again' });
     }
-
-    user.refreshTokens = user.refreshTokens.filter((t) => t !== token);
-    await user.save();
 
     const accessToken = await issueTokens(user, res);
     res.json({ accessToken, user: user.toSafeJSON() });
@@ -123,14 +128,12 @@ router.post('/refresh', async (req, res, next) => {
 router.post('/logout', protect, async (req, res, next) => {
   try {
     const token = req.cookies[REFRESH_COOKIE];
-    const user = await User.findById(req.user._id).select('+refreshTokens');
 
-    if (user && token) {
-      user.refreshTokens = user.refreshTokens.filter((t) => t !== token);
-      await user.save();
+    if (token) {
+      await User.updateOne({ _id: req.user._id }, { $pull: { refreshTokens: token } });
     }
 
-    res.clearCookie(REFRESH_COOKIE, refreshCookieOptions());
+    clearRefreshCookie(res);
     res.json({ message: 'Logged out' });
   } catch (err) {
     next(err);
