@@ -32,6 +32,13 @@ export async function protect(req, res, next) {
   }
 }
 
+export function adminAuth(req, res, next) {
+  if (req.user?.role !== 'admin') {
+    return res.status(403).json({ message: 'Admin access required' });
+  }
+  next();
+}
+
 export function requirePro(req, res, next) {
   const plan = req.user?.plan;
   if (plan === 'pro' || plan === 'lifetime') {

@@ -2,20 +2,13 @@ import express from 'express';
 import User from '../models/User.js';
 import List from '../models/List.js';
 import Pick from '../models/Pick.js';
-import { protect } from '../middleware/auth.js';
+import BlogPost from '../models/BlogPost.js';
+import { protect, adminAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Middleware to ensure user is admin
-const requireAdmin = async (req, res, next) => {
-  if (!req.user.isAdmin) {
-    return res.status(403).json({ message: 'Admin access required' });
-  }
-  next();
-};
-
 // Apply auth and admin middleware to all routes
-router.use(protect, requireAdmin);
+router.use(protect, adminAuth);
 
 // Get admin stats
 router.get('/stats', async (req, res) => {
@@ -26,12 +19,16 @@ router.get('/stats', async (req, res) => {
     const activeSubscriptions = await User.countDocuments({
       plan: { $in: ['pro', 'lifetime'] }
     });
+    const totalPosts = await BlogPost.countDocuments();
+    const publishedPosts = await BlogPost.countDocuments({ status: 'published' });
 
     res.json({
       totalUsers,
       totalLists,
       totalPicks,
-      activeSubscriptions
+      activeSubscriptions,
+      totalPosts,
+      publishedPosts
     });
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch stats' });

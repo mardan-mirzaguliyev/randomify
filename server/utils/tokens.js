@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken';
 const ACCESS_EXPIRY = '15m';
 const REFRESH_EXPIRY = '30d';
 
-export function signAccessToken(userId) {
-  return jwt.sign({ sub: userId }, process.env.JWT_ACCESS_SECRET, {
+export function signAccessToken(userId, role) {
+  return jwt.sign({ sub: userId, role }, process.env.JWT_ACCESS_SECRET, {
     expiresIn: ACCESS_EXPIRY,
   });
 }

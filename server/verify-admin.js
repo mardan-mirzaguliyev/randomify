@@ -20,7 +20,7 @@ async function verifyAdmin() {
     console.log(`  Email: ${user.email}`);
     console.log(`  Display Name: ${user.displayName}`);
     console.log(`  Plan: ${user.plan}`);
-    console.log(`  Is Admin: ${user.isAdmin}`);
+    console.log(`  Role: ${user.role}`);
     console.log(`  Has Password Hash: ${!!user.passwordHash}`);
     
     // Test password comparison

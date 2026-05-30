@@ -26,9 +26,10 @@ const userSchema = new mongoose.Schema(
       enum: ['free', 'pro', 'lifetime'],
       default: 'free',
     },
-    isAdmin: {
-      type: Boolean,
-      default: false,
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
     },
     refreshTokens: {
       type: [String],
@@ -64,7 +65,9 @@ userSchema.methods.toSafeJSON = function () {
     email: this.email,
     displayName: this.displayName,
     plan: this.plan,
-    isAdmin: this.isAdmin,
+    role: this.role,
+    // Derived for backward compatibility with existing clients that read isAdmin.
+    isAdmin: this.role === 'admin',
     lastLoginAt: this.lastLoginAt,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,

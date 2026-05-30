@@ -31,6 +31,18 @@ const blogPostSchema = new mongoose.Schema(
       enum: ['draft', 'published'],
       default: 'draft',
     },
+    category: {
+      type: String,
+      trim: true,
+      maxlength: 40,
+      default: '',
+    },
+    coverImage: {
+      type: String,
+      trim: true,
+      maxlength: 16,
+      default: '',
+    },
     tags: [
       {
         type: String,

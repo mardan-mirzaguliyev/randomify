@@ -15,7 +15,7 @@ async function createAdmin() {
     const existingUser = await User.findOne({ email });
     
     if (existingUser) {
-      existingUser.isAdmin = true;
+      existingUser.role = 'admin';
       await existingUser.save();
       console.log(`Updated existing user ${email} to admin`);
       process.exit(0);
@@ -29,7 +29,7 @@ async function createAdmin() {
       passwordHash: hashedPassword,
       displayName,
       plan: 'lifetime',
-      isAdmin: true
+      role: 'admin'
     });
     
     console.log(`Admin user created successfully!`);

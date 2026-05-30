@@ -6,25 +6,13 @@ import Spinner from '../components/ui/Spinner.jsx';
 import Badge from '../components/ui/Badge.jsx';
 import { useBlogPosts } from '../hooks/useBlogPosts.js';
 import { formatDate } from '../utils/formatDate.js';
-import { SAMPLE_BLOG_POSTS } from '../data/sampleBlogPosts.js';
 import './BlogPostsPage.css';
-
-const samplePosts = SAMPLE_BLOG_POSTS.map((post) => ({
-  _id: `sample-${post.id}`,
-  title: post.title,
-  excerpt: post.excerpt,
-  status: post.status,
-  tags: [post.category],
-  updatedAt: post.date,
-  publishedAt: post.date,
-  isSample: true,
-}));
 
 export default function BlogPostsPage() {
   const { posts, loading, error, createPost, updatePost, deletePost, refetch } = useBlogPosts();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
-  const allPosts = useMemo(() => [...samplePosts, ...posts], [posts]);
+  const allPosts = posts;
 
   const counts = useMemo(
     () => ({
@@ -111,7 +99,6 @@ export default function BlogPostsPage() {
                     <div className="blog-post-card-title">
                       <h2>{post.title}</h2>
                       <Badge>{post.status === 'published' ? 'Published' : 'Draft'}</Badge>
-                      {post.isSample && <Badge>Sample</Badge>}
                     </div>
 
                     <p className="blog-post-card-meta">
@@ -131,20 +118,12 @@ export default function BlogPostsPage() {
                   </div>
 
                   <div className="blog-post-card-actions">
-                    {post.isSample ? (
-                      <Button variant="secondary" size="sm" disabled>
-                        Read only
-                      </Button>
-                    ) : (
-                      <>
-                        <Button variant="secondary" size="sm" onClick={() => openEdit(post)}>
-                          Edit
-                        </Button>
-                        <Button variant="danger" size="sm" onClick={() => handleDelete(post)}>
-                          Delete
-                        </Button>
-                      </>
-                    )}
+                    <Button variant="secondary" size="sm" onClick={() => openEdit(post)}>
+                      Edit
+                    </Button>
+                    <Button variant="danger" size="sm" onClick={() => handleDelete(post)}>
+                      Delete
+                    </Button>
                   </div>
                 </article>
               ))}

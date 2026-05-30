@@ -18,7 +18,7 @@ function clearRefreshCookie(res) {
 }
 
 async function issueTokens(user, res) {
-  const accessToken = signAccessToken(user._id);
+  const accessToken = signAccessToken(user._id, user.role);
   const refreshToken = signRefreshToken(user._id);
 
   await User.updateOne(
