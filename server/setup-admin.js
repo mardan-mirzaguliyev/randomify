@@ -16,7 +16,7 @@ async function setupAdmin() {
       process.exit(1);
     }
 
-    user.isAdmin = true;
+    user.role = 'admin';
     await user.save();
     
     console.log(`User ${email} is now an admin!`);

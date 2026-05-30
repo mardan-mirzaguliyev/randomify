@@ -7,6 +7,8 @@ const emptyForm = {
   excerpt: '',
   content: '',
   status: 'draft',
+  category: '',
+  coverImage: '',
   tags: '',
 };
 
@@ -26,6 +28,8 @@ export default function BlogPostModal({ isOpen, onClose, onSave, post }) {
             excerpt: post.excerpt || '',
             content: post.content || '',
             status: post.status || 'draft',
+            category: post.category || '',
+            coverImage: post.coverImage || '',
             tags: post.tags?.join(', ') || '',
           }
         : emptyForm
@@ -121,6 +125,28 @@ export default function BlogPostModal({ isOpen, onClose, onSave, post }) {
               onChange={(e) => updateField('tags', e.target.value)}
               maxLength={320}
               placeholder="updates, product"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="blog-category">Category</label>
+            <input
+              id="blog-category"
+              value={form.category}
+              onChange={(e) => updateField('category', e.target.value)}
+              maxLength={40}
+              placeholder="Films, Books, Lifestyle"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="blog-cover">Cover emoji</label>
+            <input
+              id="blog-cover"
+              value={form.coverImage}
+              onChange={(e) => updateField('coverImage', e.target.value)}
+              maxLength={16}
+              placeholder="🎬"
             />
           </div>
         </div>

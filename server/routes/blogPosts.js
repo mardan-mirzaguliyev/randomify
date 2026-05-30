@@ -4,6 +4,33 @@ import { protect } from '../middleware/auth.js';
 
 const router = Router();
 
+// --- Public, unauthenticated endpoints for the visitor-facing blog ---
+// Declared before `protect` so they remain open to anonymous visitors.
+router.get('/public', async (req, res, next) => {
+  try {
+    const posts = await BlogPost.find({ status: 'published' }).sort({ publishedAt: -1 });
+    res.json({ posts });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/public/:id', async (req, res, next) => {
+  try {
+    const post = await BlogPost.findOne({ _id: req.params.id, status: 'published' });
+    if (!post) {
+      return res.status(404).json({ message: 'Blog post not found' });
+    }
+    res.json({ post });
+  } catch (err) {
+    if (err.name === 'CastError') {
+      return res.status(404).json({ message: 'Blog post not found' });
+    }
+    next(err);
+  }
+});
+
+// Everything below requires authentication.
 router.use(protect);
 
 function normalizeTags(tags) {
@@ -22,12 +49,15 @@ function normalizeTags(tags) {
   return [];
 }
 
-async function findOwnedPost(req, res, next) {
+// Admins can manage any post; regular users are scoped to their own.
+async function findManageablePost(req, res, next) {
   try {
-    const post = await BlogPost.findOne({
-      _id: req.params.postId,
-      authorId: req.user._id,
-    });
+    const query = { _id: req.params.postId };
+    if (req.user.role !== 'admin') {
+      query.authorId = req.user._id;
+    }
+
+    const post = await BlogPost.findOne(query);
 
     if (!post) {
       return res.status(404).json({ message: 'Blog post not found' });
@@ -42,7 +72,8 @@ async function findOwnedPost(req, res, next) {
 
 router.get('/', async (req, res, next) => {
   try {
-    const posts = await BlogPost.find({ authorId: req.user._id }).sort({ updatedAt: -1 });
+    const filter = req.user.role === 'admin' ? {} : { authorId: req.user._id };
+    const posts = await BlogPost.find(filter).sort({ updatedAt: -1 });
     res.json({ posts });
   } catch (err) {
     next(err);
@@ -57,6 +88,8 @@ router.post('/', async (req, res, next) => {
       excerpt: req.body.excerpt,
       content: req.body.content,
       status: req.body.status,
+      category: req.body.category,
+      coverImage: req.body.coverImage,
       tags: normalizeTags(req.body.tags),
     });
 
@@ -66,13 +99,13 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.get('/:postId', findOwnedPost, (req, res) => {
+router.get('/:postId', findManageablePost, (req, res) => {
   res.json({ post: req.blogPost });
 });
 
-router.patch('/:postId', findOwnedPost, async (req, res, next) => {
+router.patch('/:postId', findManageablePost, async (req, res, next) => {
   try {
-    const allowed = ['title', 'excerpt', 'content', 'status'];
+    const allowed = ['title', 'excerpt', 'content', 'status', 'category', 'coverImage'];
 
     for (const key of allowed) {
       if (req.body[key] !== undefined) {
@@ -91,7 +124,7 @@ router.patch('/:postId', findOwnedPost, async (req, res, next) => {
   }
 });
 
-router.delete('/:postId', findOwnedPost, async (req, res, next) => {
+router.delete('/:postId', findManageablePost, async (req, res, next) => {
   try {
     await req.blogPost.deleteOne();
     res.json({ message: 'Blog post deleted' });
