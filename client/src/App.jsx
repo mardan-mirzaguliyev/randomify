@@ -13,6 +13,7 @@ import BlogPostsPage from './pages/BlogPostsPage.jsx';
 import BlogPage from './pages/BlogPage.jsx';
 import BlogPostPage from './pages/BlogPostPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
+import ClaimAdminPage from './pages/ClaimAdminPage.jsx';
 
 export default function App() {
   return (
@@ -36,6 +37,8 @@ export default function App() {
         <Route element={<AdminRoute />}>
           <Route path="/admin" element={<AdminPage />} />
         </Route>
+
+        <Route path="/setup-admin" element={<ClaimAdminPage />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
