@@ -3,17 +3,18 @@ import { useAuth } from '../context/AuthContext.jsx';
 import AuthForm from '../components/auth/AuthForm.jsx';
 
 export default function LoginPage() {
-  const { login, user } = useAuth();
+  const { login, user, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   if (user) {
-    navigate('/', { replace: true });
+    navigate(isAdmin ? '/admin' : '/dashboard', { replace: true });
     return null;
   }
 
   const handleLogin = async (email, password) => {
-    await login(email, password);
-    navigate('/');
+    const data = await login(email, password);
+    const dest = data.user?.isAdmin ? '/admin' : '/dashboard';
+    navigate(dest, { replace: true });
   };
 
   return (

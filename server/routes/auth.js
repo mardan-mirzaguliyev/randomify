@@ -158,6 +158,26 @@ router.get('/me', protect, (req, res) => {
   res.json({ user: req.user.toSafeJSON() });
 });
 
+// One-time endpoint: promotes the authenticated user to admin if no admins
+// exist yet in the database. Disabled automatically after the first admin
+// is created, so it is safe to leave in place.
+router.post('/claim-admin', protect, async (req, res, next) => {
+  try {
+    const adminCount = await User.countDocuments({ role: 'admin' });
+    if (adminCount > 0) {
+      return res.status(409).json({ message: 'An admin account already exists.' });
+    }
+
+    req.user.role = 'admin';
+    req.user.plan = 'lifetime';
+    await req.user.save();
+
+    res.json({ message: 'You are now an admin.', user: req.user.toSafeJSON() });
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post('/forgot-password', authLimiter, async (req, res, next) => {
   try {
     const { email } = req.body;
