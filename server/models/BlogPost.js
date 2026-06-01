@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { FIELD_LENGTHS } from '../utils/constants.js';
 
 const blogPostSchema = new mongoose.Schema(
   {
@@ -24,7 +25,7 @@ const blogPostSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      maxlength: 20000,
+      maxlength: FIELD_LENGTHS.blogContent,
     },
     status: {
       type: String,

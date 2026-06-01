@@ -1,4 +1,6 @@
+import crypto from 'crypto';
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import User from '../models/User.js';
 import { protect } from '../middleware/auth.js';
 import {
@@ -8,9 +10,17 @@ import {
   REFRESH_COOKIE,
   refreshCookieOptions,
 } from '../utils/tokens.js';
+import { MAX_REFRESH_TOKENS } from '../utils/constants.js';
 
 const router = Router();
-const MAX_REFRESH_TOKENS = 5;
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Too many attempts, please try again later.' },
+});
 
 function clearRefreshCookie(res) {
   const { maxAge, ...options } = refreshCookieOptions();
@@ -37,12 +47,16 @@ async function issueTokens(user, res) {
   return accessToken;
 }
 
-router.post('/register', async (req, res, next) => {
+router.post('/register', authLimiter, async (req, res, next) => {
   try {
     const { email, password, displayName } = req.body;
 
     if (!email || !password || !displayName) {
       return res.status(400).json({ message: 'Email, password, and display name are required' });
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ message: 'Invalid email address' });
     }
 
     if (password.length < 8) {
@@ -68,7 +82,7 @@ router.post('/register', async (req, res, next) => {
   }
 });
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', authLimiter, async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -142,6 +156,100 @@ router.post('/logout', protect, async (req, res, next) => {
 
 router.get('/me', protect, (req, res) => {
   res.json({ user: req.user.toSafeJSON() });
+});
+
+router.post('/forgot-password', authLimiter, async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    // Always respond OK to prevent email enumeration
+    if (!user) {
+      return res.json({ message: 'If that email exists, a reset link has been sent.' });
+    }
+
+    const rawToken = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+    user.passwordResetToken = tokenHash;
+    user.passwordResetExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    await user.save();
+
+    // TODO: send email with reset link containing rawToken
+    // In production wire this to your email provider (e.g. Resend, SendGrid)
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[DEV] Password reset token for ${email}: ${rawToken}`);
+    }
+
+    res.json({ message: 'If that email exists, a reset link has been sent.' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/reset-password', authLimiter, async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+    if (!token || !password) {
+      return res.status(400).json({ message: 'Token and new password are required' });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({ message: 'Password must be at least 8 characters' });
+    }
+
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const user = await User.findOne({
+      passwordResetToken: tokenHash,
+      passwordResetExpiry: { $gt: new Date() },
+    }).select('+passwordResetToken +passwordResetExpiry +refreshTokens');
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired reset token' });
+    }
+
+    user.passwordHash = await User.hashPassword(password);
+    user.passwordResetToken = null;
+    user.passwordResetExpiry = null;
+    user.refreshTokens = []; // invalidate all sessions on password reset
+    await user.save();
+
+    clearRefreshCookie(res);
+    res.json({ message: 'Password reset successful. Please log in.' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/change-password', protect, async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'Current and new password are required' });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({ message: 'New password must be at least 8 characters' });
+    }
+
+    const user = await User.findById(req.user._id).select('+passwordHash');
+    if (!(await user.comparePassword(currentPassword))) {
+      return res.status(401).json({ message: 'Current password is incorrect' });
+    }
+
+    user.passwordHash = await User.hashPassword(newPassword);
+    user.refreshTokens = []; // invalidate all other sessions
+    await user.save();
+
+    clearRefreshCookie(res);
+    res.json({ message: 'Password changed. Please log in again.' });
+  } catch (err) {
+    next(err);
+  }
 });
 
 export default router;

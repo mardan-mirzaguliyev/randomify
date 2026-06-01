@@ -3,6 +3,7 @@ import List from '../models/List.js';
 import Pick from '../models/Pick.js';
 import { protect, requirePro, listAccess } from '../middleware/auth.js';
 import { pickItem, shuffleAll } from '../services/randomization.js';
+import { PLAN_LIMITS } from '../utils/constants.js';
 
 const router = Router();
 
@@ -69,7 +70,7 @@ router.post('/', async (req, res, next) => {
     const count = await List.countDocuments({ ownerId: req.user._id });
     if (!req.user.canCreateList(count)) {
       return res.status(403).json({
-        message: 'Free plan allows up to 3 lists. Upgrade to create more.',
+        message: `Free plan allows up to ${PLAN_LIMITS.free.maxLists} lists. Upgrade to create more.`,
         code: 'UPGRADE_REQUIRED',
       });
     }
@@ -142,7 +143,7 @@ router.post('/:listId/items', listAccess(), async (req, res, next) => {
   try {
     if (!req.user.canAddItem(req.list.items.length)) {
       return res.status(403).json({
-        message: 'Free plan allows up to 20 items per list. Upgrade for unlimited items.',
+        message: `Free plan allows up to ${PLAN_LIMITS.free.maxItemsPerList} items per list. Upgrade for unlimited items.`,
         code: 'UPGRADE_REQUIRED',
       });
     }
@@ -275,7 +276,7 @@ router.post('/:listId/clone', requirePro, async (req, res, next) => {
     const count = await List.countDocuments({ ownerId: req.user._id });
     if (!req.user.canCreateList(count)) {
       return res.status(403).json({
-        message: 'Free plan allows up to 3 lists. Upgrade to create more.',
+        message: `Free plan allows up to ${PLAN_LIMITS.free.maxLists} lists. Upgrade to create more.`,
         code: 'UPGRADE_REQUIRED',
       });
     }
