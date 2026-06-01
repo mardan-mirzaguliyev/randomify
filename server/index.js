@@ -17,20 +17,21 @@ const isProd = process.env.NODE_ENV === 'production';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const clientUrl = process.env.CLIENT_URL || (isProd ? undefined : true);
-
-if (!clientUrl && isProd) {
-  console.error('CLIENT_URL is required in production');
-  process.exit(1);
-}
+const clientUrl = process.env.CLIENT_URL;
 
 app.use(helmet());
-app.use(
-  cors({
-    origin: clientUrl || true,
-    credentials: true,
-  })
-);
+
+// In production the React app is served from the same Express process (same
+// origin), so CORS is not needed. In development the Vite dev server runs on
+// a different port, so we allow it explicitly.
+if (!isProd) {
+  app.use(
+    cors({
+      origin: clientUrl || true,
+      credentials: true,
+    })
+  );
+}
 app.use(express.json({ limit: '50kb' }));
 app.use(cookieParser());
 
