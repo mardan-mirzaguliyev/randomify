@@ -1,15 +1,16 @@
 import mongoose from 'mongoose';
+import { FIELD_LENGTHS } from '../utils/constants.js';
 
 const itemSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    maxlength: 200,
+    maxlength: FIELD_LENGTHS.itemTitle,
     trim: true,
   },
   notes: {
     type: String,
-    maxlength: 1000,
+    maxlength: FIELD_LENGTHS.itemNotes,
     default: '',
   },
   url: {
@@ -65,12 +66,12 @@ const listSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      maxlength: 100,
+      maxlength: FIELD_LENGTHS.listTitle,
       trim: true,
     },
     description: {
       type: String,
-      maxlength: 500,
+      maxlength: FIELD_LENGTHS.listDescription,
       default: '',
     },
     category: {

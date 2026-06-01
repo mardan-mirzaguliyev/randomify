@@ -5,6 +5,7 @@ import './HomePage.css';
 export default function HomePage() {
   return (
     <div className="home-page">
+      {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
           <h1 className="hero-title">
@@ -24,6 +25,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Features Section */}
       <section className="features">
         <div className="page">
           <h2 className="features-title">Why Randomify?</h2>
@@ -52,6 +54,79 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section className="pricing-section">
+        <div className="page">
+          <h2 className="pricing-title">Simple, Transparent Pricing</h2>
+          <p className="pricing-subtitle">Start free, upgrade when you need more.</p>
+          <div className="pricing-grid">
+            {/* Basic Plan */}
+            <div className="pricing-card">
+              <div className="pricing-card-header">
+                <h3 className="pricing-plan-name">Basic</h3>
+                <div className="pricing-price">
+                  <span className="pricing-amount">$0</span>
+                  <span className="pricing-period">/ month</span>
+                </div>
+              </div>
+              <ul className="pricing-features">
+                <li>Up to 10 lists</li>
+                <li>Basic random picks</li>
+                <li>No ads</li>
+                <li>Community support</li>
+              </ul>
+              <Link to="/register" className="pricing-cta pricing-cta--secondary">
+                Get started free
+              </Link>
+            </div>
+
+            {/* Pro Plan */}
+            <div className="pricing-card pricing-card--featured">
+              <div className="pricing-badge">Most Popular</div>
+              <div className="pricing-card-header">
+                <h3 className="pricing-plan-name">Pro</h3>
+                <div className="pricing-price">
+                  <span className="pricing-amount">$9.99</span>
+                  <span className="pricing-period">/ month</span>
+                </div>
+              </div>
+              <ul className="pricing-features">
+                <li>Unlimited lists</li>
+                <li>Weighted picks</li>
+                <li>Cooldowns & history</li>
+                <li>Advanced analytics</li>
+                <li>Priority support</li>
+              </ul>
+              <Link to="/register" className="pricing-cta pricing-cta--primary">
+                Start Pro
+              </Link>
+            </div>
+
+            {/* Enterprise Plan */}
+            <div className="pricing-card">
+              <div className="pricing-card-header">
+                <h3 className="pricing-plan-name">Enterprise</h3>
+                <div className="pricing-price">
+                  <span className="pricing-amount">$49.99</span>
+                  <span className="pricing-period">/ month</span>
+                </div>
+              </div>
+              <ul className="pricing-features">
+                <li>Everything in Pro</li>
+                <li>Team workspaces</li>
+                <li>Custom integrations</li>
+                <li>SSO & admin controls</li>
+                <li>Dedicated support</li>
+              </ul>
+              <Link to="/register" className="pricing-cta pricing-cta--secondary">
+                Contact sales
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
       <section className="cta-section">
         <div className="page">
           <div className="cta-card">

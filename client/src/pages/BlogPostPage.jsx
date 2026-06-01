@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 import api from '../services/api.js';
 import { formatDate } from '../utils/formatDate.js';
 import { readingTime } from '../utils/readingTime.js';
@@ -66,7 +67,7 @@ export default function BlogPostPage() {
 
           <div
             className="blog-post-content"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
           />
         </article>
       </div>

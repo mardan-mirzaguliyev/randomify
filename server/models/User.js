@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { PLAN_LIMITS, FIELD_LENGTHS } from '../utils/constants.js';
 
 const userSchema = new mongoose.Schema(
   {
@@ -9,6 +10,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid email address'],
     },
     passwordHash: {
       type: String,
@@ -18,7 +20,7 @@ const userSchema = new mongoose.Schema(
     displayName: {
       type: String,
       required: true,
-      maxlength: 50,
+      maxlength: FIELD_LENGTHS.displayName,
       trim: true,
     },
     plan: {
@@ -37,18 +39,28 @@ const userSchema = new mongoose.Schema(
       default: [],
     },
     lastLoginAt: Date,
+    passwordResetToken: {
+      type: String,
+      select: false,
+      default: null,
+    },
+    passwordResetExpiry: {
+      type: Date,
+      select: false,
+      default: null,
+    },
   },
   { timestamps: true }
 );
 
 userSchema.methods.canCreateList = function (currentCount) {
   if (this.plan === 'pro' || this.plan === 'lifetime') return true;
-  return currentCount < 3;
+  return currentCount < PLAN_LIMITS.free.maxLists;
 };
 
 userSchema.methods.canAddItem = function (currentCount) {
   if (this.plan === 'pro' || this.plan === 'lifetime') return true;
-  return currentCount < 20;
+  return currentCount < PLAN_LIMITS.free.maxItemsPerList;
 };
 
 userSchema.methods.comparePassword = async function (password) {
